@@ -9,7 +9,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="config.js"></script> 
 </head>
 <body>
 
@@ -18,7 +17,6 @@
         <h1 class="text-5xl font-extrabold text-gray-900">Discriber</h1>
     </div>
     <div class="recorder-icon-box">
-        <!-- SVG for a microphone icon -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-gray-500">
             <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
             <path d="M15.75 17.25v2.25a.75.75 0 01-1.5 0v-2.25a3 3 0 00-3-3h-.75a3 3 0 00-3 3v2.25a.75.75 0 01-1.5 0v-2.25a4.5 4.5 0 019 0zm-1.5 6a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75v-.75a.75.75 0 011.5 0v.64c.594-.28 1.134-.633 1.638-1.043a.75.75 0 01.996 1.129c-.771.681-1.637 1.258-2.605 1.703a.75.75 0 01-.58-.083.75.75 0 01-.482-.68v-.575a.75.75 0 011.5 0v.575a.75.75 0 01-.75.75H12a.75.75 0 01-.75-.75v-.75a.75.75 0 011.5 0v.64c.594-.28 1.134-.633 1.638-1.043a.75.75 0 01.996 1.129c-.771.681-1.637 1.258-2.605 1.703a.75.75 0 01-.58-.083.75.75 0 01-.482-.68v-.575a.75.75 0 011.5 0z" />
@@ -45,7 +43,6 @@
         </a>
     </div>
 
-    <!-- New Transcription Section -->
     <div class="transcribe-section">
         <h2 class="text-2xl font-semibold text-gray-800">Transcribe Audio</h2>
         <div class="upload-controls">
@@ -97,57 +94,33 @@
         // --- Start Recording ---
         startButton.addEventListener('click', async () => {
             try {
-                // Request access to the user's microphone
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-                // Initialize the MediaRecorder
                 mediaRecorder = new MediaRecorder(stream);
-                
-                // Reset chunks and UI
                 audioChunks = [];
                 playbackSection.classList.add('hidden');
                 audioElement.src = '';
                 
-                // Listen for audio data
                 mediaRecorder.addEventListener('dataavailable', event => {
                     audioChunks.push(event.data);
                 });
 
-                // When the recording stops, create a Blob and update the UI
                 mediaRecorder.addEventListener('stop', () => {
-                    // Combine all audio chunks into a single Blob
                     const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    
-                    // Create a URL for the Blob
                     const audioUrl = URL.createObjectURL(audioBlob);
-
-                    // Set the audio element's source to the new URL
                     audioElement.src = audioUrl;
-                    
-                    // Make the playback section visible
                     playbackSection.classList.remove('hidden');
-
-                    // Set the download link's href and filename
                     downloadLink.href = audioUrl;
                     downloadLink.download = 'my-recording.webm';
-
-                    // Automatically trigger the download
                     downloadLink.click();
-
-                    // Clean up the stream tracks
                     stream.getTracks().forEach(track => track.stop());
                 });
 
-                // Start the recording
                 mediaRecorder.start();
-
-                // Update UI state
                 startButton.disabled = true;
                 stopButton.disabled = false;
                 status.textContent = 'Recording...';
 
             } catch (error) {
-                // Handle errors (e.g., user denies microphone access)
                 console.error('Error accessing microphone:', error);
                 showMessage('Error: Please allow microphone access to record audio.');
             }
@@ -163,7 +136,8 @@
             }
         });
 
-        // --- Transcribe Audio Functionality with AssemblyAI ---
+        // --- Transcribe Audio Functionality ---
+        // This is the updated section that connects to your server
         transcribeButton.addEventListener('click', async () => {
             const audioFile = audioFileInput.files[0];
             if (!audioFile) {
@@ -171,10 +145,39 @@
                 return;
             }
 
-            transcriptionStatus.textContent = 'Uploading audio...';
+            transcriptionStatus.textContent = 'Uploading and transcribing... Please wait.';
             transcribeButton.disabled = true;
             transcriptOutput.textContent = '';
 
+            // Create a FormData object to send the file
+            const formData = new FormData();
+            formData.append('audioFile', audioFile); // 'audioFile' must match the name in server.js
+
+            try {
+                // Send the file to your backend server's '/transcribe' endpoint
+                const response = await fetch('http://localhost:3000/transcribe', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Display the transcript returned from the server
+                    transcriptionStatus.textContent = 'Transcription complete!';
+                    transcriptOutput.textContent = data.transcript;
+                } else {
+                    transcriptionStatus.textContent = 'Error';
+                    showMessage(`Transcription failed: ${data.message}`);
+                }
+
+            } catch (error) {
+                console.error('Error sending file to server:', error);
+                transcriptionStatus.textContent = 'Error';
+                showMessage('Failed to connect to the server. Is it running?');
+            } finally {
+                transcribeButton.disabled = false;
+            }
         });
     }); 
 </script>
