@@ -1,5 +1,6 @@
 // Install the assemblyai package by executing the command "npm install assemblyai"
-import { API_KEY } from 'config.js';
+
+import { API_KEY } from './config.js';
 import { AssemblyAI } from "assemblyai";
 
 const client = new AssemblyAI({
@@ -13,6 +14,7 @@ const params = {
   audio: audioFile,
   speech_model: "universal",
   speaker_labels: true,
+  speakers_expected: 2
 };
 
 const run = async () => {
