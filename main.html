@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discriber</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="config.js"></script> 
+</head>
+<body>
+
+<div class="recorder-container">
+    <div class="header-container">
+        <h1 class="text-5xl font-extrabold text-gray-900">Discriber</h1>
+    </div>
+    <div class="recorder-icon-box">
+        <!-- SVG for a microphone icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-gray-500">
+            <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+            <path d="M15.75 17.25v2.25a.75.75 0 01-1.5 0v-2.25a3 3 0 00-3-3h-.75a3 3 0 00-3 3v2.25a.75.75 0 01-1.5 0v-2.25a4.5 4.5 0 019 0zm-1.5 6a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75v-.75a.75.75 0 011.5 0v.64c.594-.28 1.134-.633 1.638-1.043a.75.75 0 01.996 1.129c-.771.681-1.637 1.258-2.605 1.703a.75.75 0 01-.58-.083.75.75 0 01-.482-.68v-.575a.75.75 0 011.5 0v.575a.75.75 0 01-.75.75H12a.75.75 0 01-.75-.75v-.75a.75.75 0 011.5 0v.64c.594-.28 1.134-.633 1.638-1.043a.75.75 0 01.996 1.129c-.771.681-1.637 1.258-2.605 1.703a.75.75 0 01-.58-.083.75.75 0 01-.482-.68v-.575a.75.75 0 011.5 0z" />
+        </svg>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-800">Record Audio</h2>
+
+    <div class="action-buttons">
+        <button id="startButton" class="record-btn">
+            Start
+        </button>
+        <button id="stopButton" class="record-btn" disabled>
+            Stop
+        </button>
+    </div>
+
+    <p id="status" class="status-message">Ready</p>
+
+    <div id="playback-section" class="hidden">
+        <audio id="audioElement" controls></audio>
+        <a id="downloadLink" href="#" download="my-recording.webm" class="mt-4">
+            Download Recording
+        </a>
+    </div>
+
+    <!-- New Transcription Section -->
+    <div class="transcribe-section">
+        <h2 class="text-2xl font-semibold text-gray-800">Transcribe Audio</h2>
+        <div class="upload-controls">
+            <input type="file" id="audioFileInput" accept="audio/*" class="w-full">
+            <button id="transcribeButton">Transcribe</button>
+        </div>
+        <p id="transcriptionStatus" class="status-message text-center"></p>
+        <div id="transcriptOutput" class="mt-4"></div>
+    </div>
+
+    <div id="messageBox" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+            <p id="messageText" class="text-gray-800 mb-4"></p>
+            <button id="closeMessage" class="bg-blue-500 text-white px-4 py-2 rounded-md">OK</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const audioElement = document.getElementById('audioElement');
+        const status = document.getElementById('status');
+        const downloadLink = document.getElementById('downloadLink');
+        const playbackSection = document.getElementById('playback-section');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const closeMessage = document.getElementById('closeMessage');
+
+        const audioFileInput = document.getElementById('audioFileInput');
+        const transcribeButton = document.getElementById('transcribeButton');
+        const transcriptOutput = document.getElementById('transcriptOutput');
+        const transcriptionStatus = document.getElementById('transcriptionStatus');
+
+        let mediaRecorder;
+        let audioChunks = [];
+
+        // --- Helper function for displaying messages ---
+        function showMessage(text) {
+            messageText.textContent = text;
+            messageBox.classList.remove('hidden');
+        }
+
+        closeMessage.addEventListener('click', () => {
+            messageBox.classList.add('hidden');
+        });
+
+        // --- Start Recording ---
+        startButton.addEventListener('click', async () => {
+            try {
+                // Request access to the user's microphone
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Initialize the MediaRecorder
+                mediaRecorder = new MediaRecorder(stream);
+                
+                // Reset chunks and UI
+                audioChunks = [];
+                playbackSection.classList.add('hidden');
+                audioElement.src = '';
+                
+                // Listen for audio data
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+
+                // When the recording stops, create a Blob and update the UI
+                mediaRecorder.addEventListener('stop', () => {
+                    // Combine all audio chunks into a single Blob
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    
+                    // Create a URL for the Blob
+                    const audioUrl = URL.createObjectURL(audioBlob);
+
+                    // Set the audio element's source to the new URL
+                    audioElement.src = audioUrl;
+                    
+                    // Make the playback section visible
+                    playbackSection.classList.remove('hidden');
+
+                    // Set the download link's href and filename
+                    downloadLink.href = audioUrl;
+                    downloadLink.download = 'my-recording.webm';
+
+                    // Automatically trigger the download
+                    downloadLink.click();
+
+                    // Clean up the stream tracks
+                    stream.getTracks().forEach(track => track.stop());
+                });
+
+                // Start the recording
+                mediaRecorder.start();
+
+                // Update UI state
+                startButton.disabled = true;
+                stopButton.disabled = false;
+                status.textContent = 'Recording...';
+
+            } catch (error) {
+                // Handle errors (e.g., user denies microphone access)
+                console.error('Error accessing microphone:', error);
+                showMessage('Error: Please allow microphone access to record audio.');
+            }
+        });
+
+        // --- Stop Recording ---
+        stopButton.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                status.textContent = 'Recording stopped. Play or download below.';
+                startButton.disabled = false;
+                stopButton.disabled = true;
+            }
+        });
+
+        // --- Transcribe Audio Functionality with AssemblyAI ---
+        transcribeButton.addEventListener('click', async () => {
+            const audioFile = audioFileInput.files[0];
+            if (!audioFile) {
+                showMessage('Please select an audio file to transcribe.');
+                return;
+            }
+
+            transcriptionStatus.textContent = 'Uploading audio...';
+            transcribeButton.disabled = true;
+            transcriptOutput.textContent = '';
+
+            /*
+            try {
+                // Step 1: Upload the audio file to AssemblyAI
+                const uploadResponse = await fetch('https://api.assemblyai.com/v2/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': ASSEMBLY_AI_API_KEY,
+                        'Content-Type': audioFile.type,
+                    },
+                    body: audioFile
+                });
+                
+                if (!uploadResponse.ok) {
+                    const clonedResponse = uploadResponse.clone();
+                    let errorMsg;
+                    try {
+                        const errorBody = await uploadResponse.json();
+                        errorMsg = errorBody.error;
+                    } catch (e) {
+                        errorMsg = await clonedResponse.text();
+                    }
+                    throw new Error(`Upload Error: ${uploadResponse.status} - ${errorMsg}`);
+                }
+                const uploadData = await uploadResponse.json();
+                const audioUrl = uploadData.upload_url;
+
+                transcriptionStatus.textContent = 'Creating transcription job...';
+
+                // Step 2: Create a transcription job
+                const transcribeResponse = await fetch('https://api.assemblyai.com/v2/transcript', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': ASSEMBLY_AI_API_KEY,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        audio_url: audioUrl,
+                        diarization: true, // Enable speech diarization
+                    })
+                });
+
+                if (!transcribeResponse.ok) {
+                    const clonedResponse = transcribeResponse.clone();
+                    let errorMsg;
+                    try {
+                        const errorBody = await transcribeResponse.json();
+                        errorMsg = errorBody.error;
+                    } catch (e) {
+                        errorMsg = await clonedResponse.text();
+                    }
+                    throw new Error(`Transcription Job Error: ${transcribeResponse.status} - ${errorMsg}`);
+                }
+                const transcribeData = await transcribeResponse.json();
+                const transcriptId = transcribeData.id;
+
+                transcriptionStatus.textContent = 'Transcribing... (This may take a moment)';
+                
+                 // Step 3: Poll the API for the transcription result
+                let pollingInterval = 1000; // Start with 1 second polling
+                let transcriptStatus = 'queued';
+
+                while (transcriptStatus !== 'completed' && transcriptStatus !== 'error') {
+                    await new Promise(resolve => setTimeout(resolve, pollingInterval));
+
+                    const pollResponse = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': ASSEMBLY_AI_API_KEY,
+                        }
+                    });
+                    
+                    if (!pollResponse.ok) {
+                        const clonedResponse = pollResponse.clone();
+                        let errorMsg;
+                        try {
+                            const errorBody = await pollResponse.json();
+                            errorMsg = errorBody.error;
+                        } catch (e) {
+                            errorMsg = await clonedResponse.text();
+                        }
+                        throw new Error(`Polling Error: ${pollResponse.status} - ${errorMsg}`);
+                    }
+
+                    const pollData = await pollResponse.json();
+                    transcriptStatus = pollData.status;
+                    
+                    // Display status to the user
+                    transcriptionStatus.textContent = `Status: ${transcriptStatus.charAt(0).toUpperCase() + transcriptStatus.slice(1)}`;
+
+                    // Increase polling interval for longer jobs
+                    if (pollingInterval < 5000) {
+                        pollingInterval += 1000;
+                    }
+
+                    if (transcriptStatus === 'completed') {
+                        // Format and display the transcript with diarization
+                        let formattedTranscript = '';
+                        if (pollData.utterances) {
+                            pollData.utterances.forEach(utterance => {
+                                formattedTranscript += `Speaker ${utterance.speaker}: ${utterance.text}\n`;
+                            });
+                        } else {
+                            formattedTranscript = pollData.text;
+                        }
+                        transcriptOutput.textContent = formattedTranscript;
+                        transcriptionStatus.textContent = 'Transcription complete.';
+                    } else if (transcriptStatus === 'error') {
+                        throw new Error(`Transcription failed with the following error: ${pollData.error}`);
+                    }
+                } 
+
+            } catch (error) {
+                console.error('Transcription error:', error);
+                transcriptionStatus.textContent = 'Error during transcription.';
+                showMessage('Error: ' + error.message);
+            } finally {
+                transcribeButton.disabled = false;
+            } */
+        });
+    }); 
+</script>
+
+</body>
+</html>
