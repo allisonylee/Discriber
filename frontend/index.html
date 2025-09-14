@@ -174,9 +174,6 @@
             }
         });
 
-        // THE DUPLICATE 'stop' LISTENER THAT WAS HERE HAS BEEN REMOVED.
-        // This allows the following code to run without crashing.
-
         // --- Transcribe Recorded Audio Button ---
         transcribeRecordingButton.addEventListener('click', () => {
             if (recordedAudioBlob) {
@@ -195,8 +192,6 @@
             }
             transcribeAudio(audioFile);
         });
-
-        // Inside the <script> tag in index.html, within the DOMContentLoaded listener
 
         const exportButton = document.getElementById('exportButton');
 

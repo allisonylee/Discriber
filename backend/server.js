@@ -26,8 +26,6 @@ const assemblyClient = new AssemblyAI({ apiKey: assemblyApiKey });
 const genAI = new GoogleGenerativeAI(geminiApiKey);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-
-// THIS IS THE MISSING PIECE OF CODE
 // This endpoint waits for a POST request with a file and transcribes it.
 app.post('/transcribe-and-summarize', upload.single('audioFile'), async (req, res) => {
     console.log("Received a request to /transcribe");
