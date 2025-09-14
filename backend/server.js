@@ -92,5 +92,5 @@ app.post('/transcribe-and-summarize', upload.single('audioFile'), async (req, re
 
 
 app.listen(port, () => {
-  console.log(`Server is listening at http://localhost:${port}`);
+  console.log(`Server is listening at https://vitalvox-backend.onrender.com`);
 });
