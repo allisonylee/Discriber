@@ -3,61 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discriber</title>
+    <title>VitalVox</title>
     <link rel="stylesheet" href="main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .output-box {
+            margin-top: 0.5em;
+            padding: 1em;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+            background-color: #f9f9f9;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50">
 
-<div class="recorder-container">
-    <div class="header-container">
-        <h1 class="text-5xl font-extrabold text-gray-900">Discriber</h1>
-    </div>
-    <div class="recorder-icon-box">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-gray-500">
-            <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-            <path d="M15.75 17.25v2.25a.75.75 0 01-1.5 0v-2.25a3 3 0 00-3-3h-.75a3 3 0 00-3 3v2.25a.75.75 0 01-1.5 0v-2.25a4.5 4.5 0 019 0zm-1.5 6a.75.75 0 01-.75.75h-3a.75.75 0 01-.75-.75v-.75a.75.75 0 011.5 0v.64c.594-.28 1.134-.633 1.638-1.043a.75.75 0 01.996 1.129c-.771.681-1.637 1.258-2.605 1.703a.75.75 0 01-.58-.083.75.75 0 01-.482-.68v-.575a.75.75 0 011.5 0v.575a.75.75 0 01-.75.75H12a.75.75 0 01-.75-.75v-.75a.75.75 0 011.5 0v.64c.594-.28 1.134-.633 1.638-1.043a.75.75 0 01.996 1.129c-.771.681-1.637 1.258-2.605 1.703a.75.75 0 01-.58-.083.75.75 0 01-.482-.68v-.575a.75.75 0 011.5 0z" />
-        </svg>
+<div class="recorder-container max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="header-container text-center mb-8">
+        <img src="vitalvoxlogo.png" alt="VitalVox" class="h-36 w-auto inline-block align-middle mr-4">
+        <p class="text-md sm:text-lg text-black mt-2">AI-Powered Audio Transcription and Analysis for EMS</p>
     </div>
 
-    <h2 class="text-2xl font-semibold text-gray-800">Record Audio</h2>
+    <div class="w-full md:flex md:space-x-8">
 
-    <div class="action-buttons">
-        <button id="startButton" class="record-btn">
-            Start
-        </button>
-        <button id="stopButton" class="record-btn" disabled>
-            Stop
-        </button>
-    </div>
+        <div class="md:w-1/3 p-6 bg-white rounded-lg shadow-md">
+            <div class="recorder-icon-box mx-auto w-fit">
+                <img src="microphone.png" alt="Microphone Icon" class="w-16 h-16 text-gray-500">
+            </div>
 
-    <p id="status" class="status-message">Ready</p>
+            <h2 class="text-2xl font-semibold text-gray-800 text-center mt-4">Record Audio</h2>
 
-    <div id="playback-section" class="hidden">
-        <audio id="audioElement" controls></audio>
-        <a id="downloadLink" href="#" download="my-recording.webm" class="mt-4">
-            Download Recording
-        </a>
-    </div>
+            <div class="action-buttons mt-6">
+                <button id="startButton" class="record-btn">Start</button>
+                <button id="stopButton" class="record-btn" disabled>Stop</button>
+            </div>
 
-    <div class="transcribe-section">
-        <h2 class="text-2xl font-semibold text-gray-800">Transcribe Audio</h2>
-        <div class="upload-controls">
-            <input type="file" id="audioFileInput" accept="audio/*" class="w-full">
-            <button id="transcribeButton">Transcribe</button>
+            <p id="status" class="status-message text-center">Ready</p>
+
+            <div id="playback-section" class="hidden mt-4">
+                <audio id="audioElement" controls class="w-full"></audio>
+                <a id="downloadLink" href="#" download="my-recording.webm" class="mt-2 text-blue-600 hover:underline block text-center">
+                    Download Recording
+                </a>
+                <button id="transcribeRecordingButton" class="w-full mt-2">Transcribe Recording</button>
+            </div>
         </div>
-        <p id="transcriptionStatus" class="status-message text-center"></p>
-        <div id="transcriptOutput" class="mt-4"></div>
-    </div>
 
-    <div id="messageBox" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-        <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-            <p id="messageText" class="text-gray-800 mb-4"></p>
-            <button id="closeMessage" class="bg-blue-500 text-white px-4 py-2 rounded-md">OK</button>
+        <div class="md:w-2/3 mt-8 md:mt-0 p-6 bg-white rounded-lg shadow-md">
+            <div class="transcribe-section">
+                <h2 class="text-2xl font-semibold text-gray-800">Transcribe & Summarize Audio</h2>
+                <div class="upload-controls my-4 flex items-center justify-center gap-4">
+                    <input type="file" id="audioFileInput" accept="audio/*" class="hidden">
+                    <label for="audioFileInput" class="custom-file-upload">
+                        Choose Audio File
+                    </label>
+                    <button id="transcribeButton">Transcribe & Summarize</button>
+                </div>
+                <p id="transcriptionStatus" class="status-message text-center"></p>
+
+                <h3 class="text-xl font-semibold text-gray-700 mt-4">Transcript</h3>
+                <div id="transcriptOutput" class="output-box"></div>
+                
+                <div class="lg:flex lg:space-x-4">
+                    <div class="w-full lg:w-1/2">
+                        <h3 class="text-xl font-semibold text-gray-700 mt-4">Gemini Summary</h3>
+                        <div id="geminiOutput" class="output-box"></div>
+                    </div>
+                    <div class="w-full lg:w-1/2 mt-4 lg:mt-0">
+                         <h3 class="text-xl font-semibold text-gray-700 mt-4">Possible Suggestions for EMTs</h3>
+                         <div id="adviceOutput" class="output-box"></div>
+                    </div>
+                </div>
+            </div>
+            <button id="exportButton" class="record-btn mt-6" style="background-color: #0077b6;">Export All</button>
         </div>
+    </div>
+</div>
+
+<div id="messageBox" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+        <p id="messageText" class="text-gray-800 mb-4"></p>
+        <button id="closeMessage" class="bg-blue-500 text-white px-4 py-2 rounded-md">OK</button>
     </div>
 </div>
 
@@ -72,16 +104,18 @@
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
         const closeMessage = document.getElementById('closeMessage');
-
         const audioFileInput = document.getElementById('audioFileInput');
         const transcribeButton = document.getElementById('transcribeButton');
         const transcriptOutput = document.getElementById('transcriptOutput');
         const transcriptionStatus = document.getElementById('transcriptionStatus');
-
+        const geminiOutput = document.getElementById('geminiOutput');
+        const adviceOutput = document.getElementById('adviceOutput');
+        const transcribeRecordingButton = document.getElementById('transcribeRecordingButton');
+        
         let mediaRecorder;
         let audioChunks = [];
+        let recordedAudioBlob = null;
 
-        // --- Helper function for displaying messages ---
         function showMessage(text) {
             messageText.textContent = text;
             messageBox.classList.remove('hidden');
@@ -99,19 +133,26 @@
                 audioChunks = [];
                 playbackSection.classList.add('hidden');
                 audioElement.src = '';
-                
+
                 mediaRecorder.addEventListener('dataavailable', event => {
                     audioChunks.push(event.data);
                 });
 
+                // THIS IS THE ONLY 'stop' LISTENER. ALL LOGIC IS NOW HERE.
                 mediaRecorder.addEventListener('stop', () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const audioUrl = URL.createObjectURL(audioBlob);
+                    recordedAudioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const audioUrl = URL.createObjectURL(recordedAudioBlob);
+                    
                     audioElement.src = audioUrl;
                     playbackSection.classList.remove('hidden');
                     downloadLink.href = audioUrl;
                     downloadLink.download = 'my-recording.webm';
-                    downloadLink.click();
+                    
+                    status.textContent = 'Recording stopped. Play, download, or transcribe below.';
+                    startButton.disabled = false;
+                    stopButton.disabled = true;
+
+                    // This makes sure the browser releases the microphone
                     stream.getTracks().forEach(track => track.stop());
                 });
 
@@ -130,56 +171,122 @@
         stopButton.addEventListener('click', () => {
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
-                status.textContent = 'Recording stopped. Play or download below.';
-                startButton.disabled = false;
-                stopButton.disabled = true;
             }
         });
 
-        // --- Transcribe Audio Functionality ---
-        // This is the updated section that connects to your server
-        transcribeButton.addEventListener('click', async () => {
+        // THE DUPLICATE 'stop' LISTENER THAT WAS HERE HAS BEEN REMOVED.
+        // This allows the following code to run without crashing.
+
+        // --- Transcribe Recorded Audio Button ---
+        transcribeRecordingButton.addEventListener('click', () => {
+            if (recordedAudioBlob) {
+                transcribeAudio(recordedAudioBlob);
+            } else {
+                showMessage("No recorded audio available to transcribe.");
+            }
+        });
+        
+        // --- Transcribe Uploaded File Button ---
+        transcribeButton.addEventListener('click', () => {
             const audioFile = audioFileInput.files[0];
             if (!audioFile) {
                 showMessage('Please select an audio file to transcribe.');
                 return;
             }
+            transcribeAudio(audioFile);
+        });
 
-            transcriptionStatus.textContent = 'Uploading and transcribing... Please wait.';
+        // Inside the <script> tag in index.html, within the DOMContentLoaded listener
+
+        const exportButton = document.getElementById('exportButton');
+
+        exportButton.addEventListener('click', () => {
+            // 1. Get the text from all three output boxes
+            const transcriptText = document.getElementById('transcriptOutput').textContent;
+            const summaryText = document.getElementById('geminiOutput').textContent;
+            const adviceText = document.getElementById('adviceOutput').textContent;
+
+            // Check if there's any text to export
+            if (!transcriptText && !summaryText && !adviceText) {
+                showMessage("There is no content to export yet.");
+                return;
+            }
+
+            // 2. Combine the text into a single, formatted string
+            const combinedText = `
+        ========================
+        VITALVOX TRANSCRIPT
+        ========================
+
+        ${transcriptText}
+
+        ========================
+        GEMINI SUMMARY
+        ========================
+
+        ${summaryText}
+
+        ========================
+        EMT ADVICE
+        ========================
+
+        ${adviceText}
+        `;
+
+            // 3. Create a blob and trigger a download
+            const blob = new Blob([combinedText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            
+            // Create a temporary link element to trigger the download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'VitalVox-Analysis.txt'; // The name of the downloaded file
+            document.body.appendChild(a);
+            a.click();
+            
+            // Clean up by removing the link and revoking the URL
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+
+        // --- Shared Transcription Function ---
+        async function transcribeAudio(audioData) {
+            transcriptionStatus.textContent = 'Processing... Please wait.';
             transcribeButton.disabled = true;
+            transcribeRecordingButton.disabled = true;
             transcriptOutput.textContent = '';
+            geminiOutput.textContent = '';
+            adviceOutput.textContent = '';
 
-            // Create a FormData object to send the file
             const formData = new FormData();
-            formData.append('audioFile', audioFile); // 'audioFile' must match the name in server.js
+            formData.append('audioFile', audioData, 'recording.webm');
 
             try {
-                // Send the file to your backend server's '/transcribe' endpoint
-                const response = await fetch('http://localhost:3000/transcribe', {
+                const response = await fetch('http://localhost:3000/transcribe-and-summarize', {
                     method: 'POST',
                     body: formData,
                 });
-
                 const data = await response.json();
-
                 if (data.success) {
-                    // Display the transcript returned from the server
-                    transcriptionStatus.textContent = 'Transcription complete!';
+                    transcriptionStatus.textContent = 'Complete!';
                     transcriptOutput.textContent = data.transcript;
+                    geminiOutput.textContent = data.summary;
+                    adviceOutput.textContent = data.advice;
                 } else {
                     transcriptionStatus.textContent = 'Error';
-                    showMessage(`Transcription failed: ${data.message}`);
+                    showMessage(`Operation failed: ${data.message}`);
                 }
-
             } catch (error) {
                 console.error('Error sending file to server:', error);
                 transcriptionStatus.textContent = 'Error';
                 showMessage('Failed to connect to the server. Is it running?');
             } finally {
                 transcribeButton.disabled = false;
+                transcribeRecordingButton.disabled = false;
             }
-        });
-    }); 
+        }
+    });
 </script>
 
 </body>

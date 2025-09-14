@@ -1,134 +1,219 @@
+/*
+  VitalVox Theme Palette
+  Inspired by Logo Option 1
+
+  - Light Background: #f4f7f9
+  - White Panel: #ffffff
+  - Dark Text: #2d3748
+  - Muted Text: #5a6a7e
+  - Primary Blue: #0077b6
+  - Accent Green: #2a9d8f
+  - Stop Red: #d90429 (For universal UX)
+*/
+
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f3f4f6;
+    background-color: #000000; /* Lighter, more modern background */
+    color: #2d3748; /* Dark charcoal for primary text */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 1rem;
 }
+
 .recorder-container {
-    background-color: white;
+    background-color: #ffffff; /* Clean white card */
     padding: 2.5rem;
     border-radius: 1.5rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    max-width: 28rem;
+    box-shadow: 0 10px 25px -5px rgba(45, 55, 72, 0.1), 0 8px 10px -6px rgba(45, 55, 72, 0.1); /* Softer, deeper shadow */
+    max-width: 32rem;
     width: 100%;
     text-align: center;
 }
-/* New styling for the header container */
+
+/* Header now uses the logo's signature gradient */
 .header-container {
-    background-color: #e2e8f0;
-    padding: 1rem 2rem;
-    margin: -2.5rem -2.5rem 2rem;
+    background: linear-gradient(90deg, #0077b6, #2a9d8f);
+    color: white;
+    padding: 1.5rem 2rem;
+    margin: -2.5rem -2.5rem 2.5rem; /* Increased bottom margin */
     border-top-left-radius: 1.5rem;
     border-top-right-radius: 1.5rem;
 }
+
+/* Make sure you have an H1 in your header for this style to apply */
+.header-container h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+.header-container h1 span {
+    font-weight: 400; /* Replicates the "Vital(Vox)" logo style */
+}
+
 .recorder-icon-box {
-    background-color: #e5e7eb;
+    background-color: #e0f2fe; /* Light blue to complement the theme */
     padding: 2rem;
     border-radius: 9999px;
     display: inline-flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 2rem;
+    box-shadow: 0 0 0 5px white, 0 0 0 8px #0077b6; /* Themed outer ring */
 }
+/* Style the SVG icon inside the box */
+.recorder-icon-box svg {
+    width: 48px;
+    height: 48px;
+    color: #0077b6;
+}
+
 .status-message {
     margin-top: 1.5rem;
     font-size: 1.125rem;
-    font-weight: 600;
-    color: #4b5563;
+    font-weight: 500;
+    color: #5a6a7e; /* Softer gray for secondary text */
 }
+
 .action-buttons {
     display: flex;
     justify-content: center;
     gap: 1.5rem;
-    margin-top: 1.5rem;
+    margin-top: 2rem;
 }
+
 .record-btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.85rem 1.75rem;
     font-weight: 600;
     border-radius: 0.75rem;
     border: none;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    min-width: 120px;
-}
-#startButton {
-    background-color: #ef4444;
+    min-width: 130px;
     color: white;
+}
+.record-btn:hover:not(:disabled) {
+    transform: translateY(-2px); /* Add a satisfying lift effect */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Use the theme's green for "Start/Go" */
+#startButton {
+    background-color: #2a9d8f;
 }
 #startButton:hover:not(:disabled) {
-    background-color: #dc2626;
+    background-color: #268d80;
 }
+
+/* A strong, universal red for "Stop" is best for usability */
 #stopButton {
-    background-color: #3b82f6;
-    color: white;
+    background-color: #d90429;
 }
 #stopButton:hover:not(:disabled) {
-    background-color: #2563eb;
+    background-color: #b50322;
 }
+
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    transform: none;
     box-shadow: none;
 }
+
 #audioElement, #downloadLink {
     margin-top: 2rem;
     width: 100%;
 }
-#downloadLink {
+
+/* Themed download and upload buttons as primary actions */
+#downloadLink, .upload-controls button {
     display: inline-block;
-    background-color: #10b981;
+    background-color: #0077b6; /* Primary Blue */
     color: white;
-    padding: 0.75rem 1.5rem;
+    padding: 0.85rem 1.75rem;
     border-radius: 0.75rem;
     text-decoration: none;
-    transition: background-color 0.2s;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-#downloadLink:hover {
-    background-color: #059669;
+#downloadLink:hover, .upload-controls button:hover:not(:disabled) {
+    background-color: #005a8d; /* Darker blue on hover */
+    transform: translateY(-2px);
 }
+
+#transcribeRecordingButton {
+    display: inline-block;
+    background-color: #0077b6; /* Primary Blue */
+    color: white;
+    padding: 0.85rem 1.75rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+#transcribeRecordingButton:hover:not(:disabled) {
+    background-color: #005a8d; /* Darker blue on hover */
+    transform: translateY(-2px);
+}
+
 .hidden {
     display: none;
 }
+
+/* Polished Transcription Section */
 .transcribe-section {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid #e5e7eb;
+    margin-top: 0;
+    padding-top: 0;
     text-align: left;
 }
 .transcribe-section h2 {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
 }
+
 #transcriptOutput {
-    background-color: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.5rem;
-    padding: 1rem;
+    background-color: #f4f7f9; /* Match body background for consistency */
+    border: 1px solid #dde3ea;
+    border-radius: 0.75rem; /* Consistent rounding */
+    padding: 1.25rem;
     white-space: pre-wrap;
-    min-height: 100px;
-    font-size: 0.875rem;
-    color: #4b5563;
+    min-height: 120px;
+    font-size: 1rem;
+    line-height: 1.6;
 }
+
 .upload-controls {
     display: flex;
-    align-items: center;
+    justify-content: center;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
 }
-.upload-controls button {
-    background-color: #8b5cf6;
+
+/* main.css */
+
+.custom-file-upload {
+    display: inline-block;
+    background-color: #0077b6; /* Primary Blue */
     color: white;
-    padding: 0.75rem 1.5rem;
+    padding: 0.85rem 1.75rem;
     border-radius: 0.75rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
     border: none;
     cursor: pointer;
-    transition: all 0.2s;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
-.upload-controls button:hover:not(:disabled) {
-    background-color: #7c3aed;
+
+.custom-file-upload:hover {
+    background-color: #005a8d; /* Darker blue on hover */
+    transform: translateY(-2px);
 }
