@@ -1,5 +1,7 @@
 # VitalVox: https://vitalvox.netlify.app/
 
+Demo: https://youtu.be/ndIbq4j0uBA?si=NljyFuIEbSggVsYu
+
 ## Inspiration
 I (Allison) volunteered at a rescue squad in high school, riding in ambulances alongside EMTs and responding to local 911 calls. There, I saw the inner workings of emergency response -- and I was shocked. We were almost always thrown on scene with very little information from dispatchers, so we constantly had to walk up to patients having no idea what their emergency was. It wasn't uncommon to just get a message saying "motor vehicle accident" -- which told us nothing about how many patients there were, how severe the accident was, or what kinds of injuries were present. I soon learned that this was because dispatchers had to juggle countless responsibilities at once, making it impossible for them to give us all the information they received. That's why Arvin and I built VitalVox. VitalVox makes it much easier for dispatchers to transmit information to EMTs before they arrive on scene, allowing them to make faster, smarter decisions and save more lives.
 
