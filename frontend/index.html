@@ -263,7 +263,7 @@
             formData.append('audioFile', audioData, 'recording.webm');
 
             try {
-                const response = await fetch('https://vitalvox-backend.onrender.com', {
+                const response = await fetch('https://vitalvox-backend.onrender.com/transcribe-and-summarize', {
                     method: 'POST',
                     body: formData,
                 });
