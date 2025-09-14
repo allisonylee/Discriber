@@ -19,7 +19,7 @@
             min-height: 100px;
             max-height: 300px;
             overflow-y: auto;
-        }
+        } 
     </style>
 </head>
 <body class="bg-gray-50">
@@ -263,7 +263,7 @@
             formData.append('audioFile', audioData, 'recording.webm');
 
             try {
-                const response = await fetch('http://localhost:3000/transcribe-and-summarize', {
+                const response = await fetch('https://vitalvox-backend.onrender.com', {
                     method: 'POST',
                     body: formData,
                 });
