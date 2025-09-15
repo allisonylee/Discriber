@@ -1,4 +1,5 @@
 # VitalVox: https://vitalvox.netlify.app/
+Devpost: https://devpost.com/software/vitalvox
 
 Demo: https://youtu.be/ndIbq4j0uBA?si=NljyFuIEbSggVsYu
 
